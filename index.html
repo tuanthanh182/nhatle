@@ -21,6 +21,31 @@
         padding: 0;
         overflow: hidden;
       }
+      /* 🎵 Nút phát nhạc */
+      #music-btn {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1000;
+        background: rgba(255, 182, 193, 0.8);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 10px rgba(255, 192, 203, 0.7);
+        transition: 0.3s;
+      }
+
+      #music-btn:hover {
+        transform: scale(1.1);
+        background: rgba(255, 105, 180, 0.9);
+      }
     </style>
     <script type="text/javascript">
       var canvas = document.getElementById("canvas");
@@ -29,7 +54,7 @@
       canvas.height = window.innerHeight;
       canvas.width = window.innerWidth;
 
-      var texts = "Anh yêu ".split("");
+      var texts = "Anh yeu em".split("");
 
       var fontSize = 16;
       var columns = canvas.width / fontSize;
@@ -395,6 +420,7 @@
         }, 10);
       })(document.getElementById("pinkboard"));
     </script>
+    <button id="music-btn">▶</button>
   </body>
 
   <audio autoplay loop controls>
