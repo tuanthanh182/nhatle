@@ -1,27 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
   <head>
     <title>Nhật Lệ</title>
     <meta charset="UTF-8" />
-    <meta viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Keywords" content="爱心代码，程序员表白" />
     <meta
       name="Description"
       content="爱心代码，HTML文件，何书悦GitHub爱心代码项目"
     />
-  </head>
-
-  <body>
-    <canvas id="canvas"></canvas>
-    <style type="text/css">
+    <style>
+      /* CSS CHUNG */
+      html,
       body {
-        margin: 0;
+        height: 100%;
         padding: 0;
-        overflow: hidden;
+        margin: 0;
+        background: rgb(0, 0, 0);
+        overflow: hidden; /* Quan trọng để tránh thanh cuộn */
       }
-      /* 🎵 Nút phát nhạc */
+      /* CANVAS cho Matrix Rain */
+      #canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1; /* Đảm bảo Matrix Rain nằm dưới Heart Effect */
+      }
+      /* CANVAS cho Heart Effect */
+      #pinkboard {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2; /* Đảm bảo Heart Effect nằm trên Matrix Rain */
+        width: 100%;
+        height: 100%;
+      }
+
+      /* HIỆU ỨNG TEXT VÀ VỊ TRÍ TRÁI TIM */
+      #child {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-top: -75px;
+        margin-left: -100px;
+        z-index: 3; /* Đảm bảo chữ nằm trên mọi thứ */
+      }
+
+      h4 {
+        font-family: "Jet Brains Mono", monospace;
+        font-size: 40px;
+        color: #ffb2cd;
+        position: relative;
+        top: -70px;
+        left: -65px;
+      }
+
+      /* Nút phát nhạc */
       #music-btn {
         position: fixed;
         top: 15px;
@@ -47,7 +81,30 @@
         background: rgba(255, 105, 180, 0.9);
       }
     </style>
-    <script type="text/javascript">
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+    <div id="child">
+      <h4></h4>
+    </div>
+    <canvas id="pinkboard"></canvas>
+    <button id="music-btn">▶</button>
+    <audio id="bg-music" style="display: none" autoplay loop>
+      <source
+        src="Sương Mai Trong Veo - Tr.D ft Việt Anh  OFFICIAL MUSIC VIDEO (prod. Zan) - itsmeTr.D.mp3"
+        type="audio/ogg"
+      />
+      <source
+        src="Sương Mai Trong Veo - Tr.D ft Việt Anh  OFFICIAL MUSIC VIDEO (prod. Zan) - itsmeTr.D.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <script>
+      // ===================================
+      // 1. SCRIPT MATRIX RAIN
+      // ===================================
       var canvas = document.getElementById("canvas");
       var ctx = canvas.getContext("2d");
 
@@ -58,21 +115,16 @@
 
       var fontSize = 16;
       var columns = canvas.width / fontSize;
-      // 用于计算输出文字时坐标，所以长度即为列数
       var drops = [];
-      //初始值
       for (var x = 0; x < columns; x++) {
         drops[x] = 1;
       }
 
       function draw() {
-        //让背景逐渐由透明到不透明
         ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        //文字颜色
         ctx.fillStyle = "#f584b7";
         ctx.font = fontSize + "px arial";
-        //逐行输出文字
         for (var i = 0; i < drops.length; i++) {
           var text = texts[Math.floor(Math.random() * texts.length)];
           ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -85,61 +137,72 @@
         }
       }
       setInterval(draw, 33);
-    </script>
-  </body>
-</html>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-  <head>
-    <title>love</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="Generator" content="EditPlus" />
-    <meta name="Author" content="" />
-    <meta name="Keywords" content="" />
-    <meta name="Description" content="" />
-    <meta charset="UTF-8" />
-    <style>
-      html,
-      body {
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        background: rgb(0, 0, 0);
+      // END SCRIPT MATRIX RAIN
+
+      // ===================================
+      // 2. SCRIPT XỬ LÝ NÚT NHẠC
+      // => ĐÃ ĐƯỢC CHUYỂN XUỐNG ĐÂY ĐỂ ĐẢM BẢO CHẠY ĐÚNG
+      // ===================================
+      var musicBtn = document.getElementById("music-btn");
+      var bgMusic = document.getElementById("bg-music");
+      var isPlaying = false;
+
+      function toggleMusic() {
+        if (!bgMusic) {
+          console.error("Không tìm thấy thẻ <audio> với id 'bg-music'!");
+          return;
+        }
+
+        if (isPlaying) {
+          bgMusic.pause();
+          musicBtn.innerHTML = "▶";
+          isPlaying = false;
+        } else {
+          bgMusic.play().catch(function (error) {
+            console.error(
+              "Lỗi khi phát nhạc (Có thể do trình duyệt chặn Autoplay): ",
+              error
+            );
+            // Giữ nguyên biểu tượng Play nếu không thể phát
+            musicBtn.innerHTML = "▶";
+            isPlaying = false;
+          });
+          musicBtn.innerHTML = "⏸";
+          isPlaying = true;
+        }
       }
 
-      canvas {
-        position: absolute;
-        width: 100%;
-        height: 100%;
+      // Gắn sự kiện click cho nút nhạc
+      // **CHỈ GẮN SỰ KIỆN KHI CÓ NÚT NHẠC**
+      if (musicBtn) {
+        musicBtn.addEventListener("click", toggleMusic);
       }
 
-      #child {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        margin-top: -75px;
-        margin-left: -100px;
-      }
+      // Thử tự động phát ban đầu (Trình duyệt thường chặn)
+      window.onload = function () {
+        if (bgMusic && bgMusic.autoplay) {
+          bgMusic
+            .play()
+            .then(function () {
+              // Phát thành công
+              musicBtn.innerHTML = "⏸";
+              isPlaying = true;
+            })
+            .catch(function (error) {
+              // Bị chặn
+              console.log("Không thể tự động phát, cần tương tác người dùng.");
+              musicBtn.innerHTML = "▶";
+              isPlaying = false;
+            });
+        }
+      };
+      // END SCRIPT NÚT NHẠC
 
-      h4 {
-        font-family: "Jet Brains Mono", monospace;
-        font-size: 40px;
-        color: #ffb2cd;
-        position: relative;
-        top: -70px;
-        left: -65px;
-      }
-    </style>
-  </head>
+      // ===================================
+      // 3. SCRIPT HEART EFFECT
+      // => Cần dán mã hiệu ứng trái tim CÒN LẠI vào đây
+      // ===================================
 
-  <body>
-    <div id="child">
-      <h4></h4>
-    </div>
-    <!--这里写名字❤！！！-->
-    <canvas id="pinkboard"></canvas>
-    <!-- <canvas id= "canvas"></canvas>  -->
-    <script>
       /*
        * Settings
        */
@@ -419,18 +482,7 @@
           render();
         }, 10);
       })(document.getElementById("pinkboard"));
+      // END SCRIPT HEART EFFECT
     </script>
-    <button id="music-btn">▶</button>
   </body>
-
-  <audio autoplay loop>
-    <source
-      src="Sương Mai Trong Veo - Tr.D ft Việt Anh  OFFICIAL MUSIC VIDEO (prod. Zan) - itsmeTr.D.mp3"
-      type="audio/ogg"
-    />
-    <source
-      src="Sương Mai Trong Veo - Tr.D ft Việt Anh  OFFICIAL MUSIC VIDEO (prod. Zan) - itsmeTr.D.mp3"
-      type="audio/mpeg"
-    />
-  </audio>
 </html>
